@@ -7,7 +7,7 @@ import { ThemeProvider } from '@/components/providers/theme-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Jotion',
+  title: 'MindNote',
   description: 'The connected workspace where better, faster work happens',
   icons: {
     icon: [
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange
-          storageKey="jotion-theme-2"
+          storageKey="mindnote-theme-2"
         >
           {children}
         </ThemeProvider>
