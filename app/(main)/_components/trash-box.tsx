@@ -1,13 +1,14 @@
 'use client'
 
-import { useParams, useRouter } from 'next/navigation'
-import { useMutation, useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
 import React, { useState } from 'react'
-import { Id } from '@/convex/_generated/dataModel'
-import { toast } from 'sonner'
-import { Spinner } from '@/components/spinner'
+import { useParams, useRouter } from 'next/navigation'
+import { useQuery, useMutation } from 'convex/react'
 import { Search, Trash, Undo } from 'lucide-react'
+import { toast } from 'sonner'
+
+import { api } from '@/convex/_generated/api'
+import { Id } from '@/convex/_generated/dataModel'
+import { Spinner } from '@/components/spinner'
 import { Input } from '@/components/ui/input'
 import { ConfirmModal } from '@/components/modals/confirm-modal'
 
@@ -35,7 +36,7 @@ export const TrashBox = () => {
     toast.promise(promise, {
       loading: 'Restoring note...',
       success: 'Note restored!',
-      error: 'Failed to restore note.',
+      error: ' Failed to restore note.',
     })
   }
 
@@ -45,20 +46,20 @@ export const TrashBox = () => {
     toast.promise(promise, {
       loading: 'Deleting note...',
       success: 'Note deleted!',
-      error: 'Failed to delete note.',
+      error: ' Failed to delete note.',
     })
 
     if (params.documentId === documentId) {
       router.push('/documents')
     }
+  }
 
-    if (documents === undefined) {
-      return (
-        <div className="h-full flex items-center justify-center p-4">
-          <Spinner size="lg" />
-        </div>
-      )
-    }
+  if (documents === undefined) {
+    return (
+      <div className="h-full flex items-center justify-center p-4">
+        <Spinner size="lg" />
+      </div>
+    )
   }
 
   return (
@@ -69,7 +70,7 @@ export const TrashBox = () => {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="h-7 px-2 focus-visible:ring-transparent bg-secondary"
-          placeholder="Filter by page titile..."
+          placeholder="Filter by page title..."
         />
       </div>
       <div className="mt-2 px-1 pb-1">
@@ -86,12 +87,12 @@ export const TrashBox = () => {
               <div
                 onClick={(e) => onRestore(e, document._id)}
                 role="button"
-                className="rounded-sm p-2 hover:bg-neutral-200"
+                className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600"
               >
                 <Undo className="h-4 w-4 text-muted-foreground" />
               </div>
               <ConfirmModal onConfirm={() => onRemove(document._id)}>
-                <div className="rounded-sm p-2 hover:bg-neutral-200">
+                <div role="button" className="rounded-sm p-2 hover:bg-neutral-200 dark:hover:bg-neutral-600">
                   <Trash className="h-4 w-4 text-muted-foreground" />
                 </div>
               </ConfirmModal>

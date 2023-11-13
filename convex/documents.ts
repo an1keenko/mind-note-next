@@ -1,5 +1,5 @@
-import { mutation, query } from './_generated/server'
 import { v } from 'convex/values'
+import { mutation, query } from './_generated/server'
 import { Doc, Id } from './_generated/dataModel'
 
 export const archive = mutation({
@@ -93,7 +93,7 @@ export const create = mutation({
 })
 
 export const getTrash = query({
-  handler: async (ctx, args) => {
+  handler: async (ctx) => {
     const identity = await ctx.auth.getUserIdentity()
 
     if (!identity) {
@@ -158,11 +158,11 @@ export const restore = mutation({
       }
     }
 
-    await ctx.db.patch(args.id, options)
+    const document = await ctx.db.patch(args.id, options)
 
     await recursiveRestore(args.id)
 
-    return existingDocument
+    return document
   },
 })
 
