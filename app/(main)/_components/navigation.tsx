@@ -6,15 +6,15 @@ import { useMediaQuery } from 'usehooks-ts'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { UserItem } from '@/app/(main)/_components/user-item'
-import { useMutation, useQuery } from 'convex/react'
+import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { Item } from '@/app/(main)/_components/item'
 import { toast } from 'sonner'
+import { DocumentList } from './documents-list'
 
 export const Navigation = () => {
   const pathname = usePathname()
   const isMobile = useMediaQuery('(max-width: 768px)')
-  const documents = useQuery(api.documents.get)
   const create = useMutation(api.documents.create)
 
   const isResizingRef = useRef(false)
@@ -120,7 +120,9 @@ export const Navigation = () => {
           <Item onClick={() => {}} label="Settings" icon={Settings} />
           <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
-        <div className="mt-4">{documents?.map((document) => <p key={document._id}>{document.title}</p>)}</div>
+        <div className="mt-4">
+          <DocumentList />
+        </div>
         <div
           onMouseDown={handleMouseDown}
           onClick={resetWidth}
