@@ -13,8 +13,10 @@ import { toast } from 'sonner'
 import { DocumentList } from './documents-list'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { TrashBox } from '@/app/(main)/_components/trash-box'
+import { useSearch } from '@/hooks/use-search'
 
 export const Navigation = () => {
+  const search = useSearch()
   const pathname = usePathname()
   const isMobile = useMediaQuery('(max-width: 768px)')
   const create = useMutation(api.documents.create)
@@ -118,13 +120,13 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <Item onClick={() => {}} label="Search" icon={Search} isSearch />
+          <Item onClick={search.onOpen} label="Search" icon={Search} isSearch />
           <Item onClick={() => {}} label="Settings" icon={Settings} />
           <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreate} label="Add a page" icon={Plus} />
+          <Item onClick={handleCreate} label="Add a page" icon={Plus} style={{ marginTop: '1rem' }} />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />
