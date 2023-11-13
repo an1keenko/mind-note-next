@@ -74,6 +74,7 @@ export const DocumentList = ({ parentDocumentId, level = 0 }: DocumentsListProps
             onExpand={() => onExpand(document._id)}
             expanded={expanded[document._id]}
           />
+          {expanded[document._id] && <DocumentList parentDocumentId={document._id} level={level + 1} />}
         </div>
       ))}
     </>
