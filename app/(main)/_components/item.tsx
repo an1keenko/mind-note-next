@@ -29,6 +29,7 @@ interface ItemProps {
   label: string
   onClick?: () => void
   icon: LucideIcon
+  style?: React.CSSProperties
 }
 
 export const Item = ({
@@ -42,6 +43,7 @@ export const Item = ({
   level = 0,
   onExpand,
   expanded,
+  style,
 }: ItemProps) => {
   const { user } = useUser()
   const router = useRouter()
@@ -88,7 +90,7 @@ export const Item = ({
     <div
       onClick={onClick}
       role="button"
-      style={{ paddingLeft: level ? `${level * 12 + 12}px` : '12px' }}
+      style={{ paddingLeft: level ? `${level * 12 + 12}px` : '12px', ...style }}
       className={cn(
         'group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium',
         active && 'bg-primary/5 text-primary',
