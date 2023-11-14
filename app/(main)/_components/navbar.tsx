@@ -2,14 +2,15 @@
 
 import { useQuery } from 'convex/react'
 import { useParams } from 'next/navigation'
+import { MenuIcon } from 'lucide-react'
+
 import { api } from '@/convex/_generated/api'
 import { Id } from '@/convex/_generated/dataModel'
-import { MenuIcon } from 'lucide-react'
-import { Title } from '@/app/(main)/_components/title'
-import { Skeleton } from '@/components/ui/skeleton'
-import React from 'react'
-import { Banner } from '@/app/(main)/_components/Banner'
-import { Menu } from '@/app/(main)/_components/menu'
+
+import { Title } from './title'
+import { Banner } from './banner'
+import { Menu } from './menu'
+import { Publish } from './publish'
 
 interface NavbarProps {
   isCollapsed: boolean
@@ -18,6 +19,7 @@ interface NavbarProps {
 
 export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   const params = useParams()
+
   const document = useQuery(api.documents.getById, {
     documentId: params.documentId as Id<'documents'>,
   })
@@ -40,10 +42,11 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
   return (
     <>
       <nav className="bg-background dark:bg-[#1F1F1F] px-3 py-2 w-full flex items-center gap-x-4">
-        {isCollapsed && <MenuIcon role="button" onClick={onResetWidth} className="h-6 w-6 text-muted-foreground" />}{' '}
+        {isCollapsed && <MenuIcon role="button" onClick={onResetWidth} className="h-6 w-6 text-muted-foreground" />}
         <div className="flex items-center justify-between w-full">
           <Title initialData={document} />
           <div className="flex items-center gap-x-2">
+            <Publish initialData={document} />
             <Menu documentId={document._id} />
           </div>
         </div>
@@ -51,8 +54,4 @@ export const Navbar = ({ isCollapsed, onResetWidth }: NavbarProps) => {
       {document.isArchived && <Banner documentId={document._id} />}
     </>
   )
-}
-
-Title.Skeleton = function TitleSkeleton() {
-  return <Skeleton className="h-9 w-16 rounded-sm" />
 }

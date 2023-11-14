@@ -1,23 +1,26 @@
 'use client'
 
 import { ChevronsLeft, MenuIcon, Plus, PlusCircle, Search, Settings, Trash } from 'lucide-react'
-import React, { ElementRef, useEffect, useRef, useState } from 'react'
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { ElementRef, useEffect, useRef, useState } from 'react'
 import { useMediaQuery } from 'usehooks-ts'
-import { useParams, usePathname } from 'next/navigation'
-import { cn } from '@/lib/utils'
-import { UserItem } from '@/app/(main)/_components/user-item'
 import { useMutation } from 'convex/react'
-import { api } from '@/convex/_generated/api'
-import { Item } from '@/app/(main)/_components/item'
 import { toast } from 'sonner'
-import { DocumentList } from './documents-list'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { TrashBox } from '@/app/(main)/_components/trash-box'
+
+import { cn } from '@/lib/utils'
+import { api } from '@/convex/_generated/api'
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover'
 import { useSearch } from '@/hooks/use-search'
 import { useSettings } from '@/hooks/use-settings'
-import { Navbar } from '@/app/(main)/_components/navbar'
+
+import { UserItem } from './user-item'
+import { Item } from './item'
+import { DocumentList } from './document-list'
+import { TrashBox } from './trash-box'
+import { Navbar } from './navbar'
 
 export const Navigation = () => {
+  const router = useRouter()
   const settings = useSettings()
   const search = useSearch()
   const params = useParams()
@@ -29,14 +32,20 @@ export const Navigation = () => {
   const sidebarRef = useRef<ElementRef<'aside'>>(null)
   const navbarRef = useRef<ElementRef<'div'>>(null)
   const [isResetting, setIsResetting] = useState(false)
-  const [isCollapsed, setIsCollapsed] = useState(false)
+  const [isCollapsed, setIsCollapsed] = useState(isMobile)
 
   useEffect(() => {
-    isMobile ? collapse() : resetWidth()
+    if (isMobile) {
+      collapse()
+    } else {
+      resetWidth()
+    }
   }, [isMobile])
 
   useEffect(() => {
-    if (isMobile) collapse()
+    if (isMobile) {
+      collapse()
+    }
   }, [pathname, isMobile])
 
   const handleMouseDown = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -93,12 +102,12 @@ export const Navigation = () => {
   }
 
   const handleCreate = () => {
-    const promise = create({ title: 'Untitled' })
+    const promise = create({ title: 'Untitled' }).then((documentId) => router.push(`/documents/${documentId}`))
 
     toast.promise(promise, {
       loading: 'Creating a new note...',
       success: 'New note created!',
-      error: 'Failed to crate a new note.',
+      error: 'Failed to create a new note.',
     })
   }
 
@@ -124,13 +133,13 @@ export const Navigation = () => {
         </div>
         <div>
           <UserItem />
-          <Item onClick={search.onOpen} label="Search" icon={Search} isSearch />
-          <Item onClick={settings.onOpen} label="Settings" icon={Settings} />
+          <Item label="Search" icon={Search} isSearch onClick={search.onOpen} />
+          <Item label="Settings" icon={Settings} onClick={settings.onOpen} />
           <Item onClick={handleCreate} label="New page" icon={PlusCircle} />
         </div>
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreate} label="Add a page" icon={Plus} style={{ marginTop: '0.2rem' }} />
+          <Item onClick={handleCreate} icon={Plus} label="Add a page" />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />

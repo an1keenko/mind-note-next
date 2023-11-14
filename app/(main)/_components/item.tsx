@@ -1,22 +1,23 @@
 'use client'
 
 import { ChevronDown, ChevronRight, LucideIcon, MoreHorizontal, Plus, Trash } from 'lucide-react'
+import { useMutation } from 'convex/react'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import { useUser } from '@clerk/clerk-react'
+
 import { Id } from '@/convex/_generated/dataModel'
 import { cn } from '@/lib/utils'
 import { Skeleton } from '@/components/ui/skeleton'
-import React from 'react'
-import { useMutation } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import { useRouter } from 'next/navigation'
-import { toast } from 'sonner'
 import {
   DropdownMenu,
+  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { useUser } from '@clerk/clerk-react'
+import React from 'react'
 
 interface ItemProps {
   id?: Id<'documents'>
@@ -29,7 +30,6 @@ interface ItemProps {
   label: string
   onClick?: () => void
   icon: LucideIcon
-  style?: React.CSSProperties
 }
 
 export const Item = ({
@@ -43,7 +43,6 @@ export const Item = ({
   level = 0,
   onExpand,
   expanded,
-  style,
 }: ItemProps) => {
   const { user } = useUser()
   const router = useRouter()
@@ -53,7 +52,7 @@ export const Item = ({
   const onArchive = (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     event.stopPropagation()
     if (!id) return
-    const promise = archive({ id })
+    const promise = archive({ id }).then(() => router.push('/documents'))
 
     toast.promise(promise, {
       loading: 'Moving to trash...',
@@ -90,7 +89,9 @@ export const Item = ({
     <div
       onClick={onClick}
       role="button"
-      style={{ paddingLeft: level ? `${level * 12 + 12}px` : '12px', ...style }}
+      style={{
+        paddingLeft: level ? `${level * 12 + 12}px` : '12px',
+      }}
       className={cn(
         'group min-h-[27px] text-sm py-1 pr-3 w-full hover:bg-primary/5 flex items-center text-muted-foreground font-medium',
         active && 'bg-primary/5 text-primary',
@@ -108,12 +109,12 @@ export const Item = ({
       {documentIcon ? (
         <div className="shrink-0 mr-2 text-[18px]">{documentIcon}</div>
       ) : (
-        <Icon className="shrink-0 h-[18px] mr-2 text-muted-foreground" />
+        <Icon className="shrink-0 h-[18px] w-[18px] mr-2 text-muted-foreground" />
       )}
-      <span className="trancate">{label}</span>
+      <span className="truncate">{label}</span>
       {isSearch && (
         <kbd className="ml-auto pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-          <span className="text-xs">⌘ or CTRL</span>
+          <span className="text-xs">⌘</span>K
         </kbd>
       )}
       {!!id && (
@@ -151,7 +152,12 @@ export const Item = ({
 
 Item.Skeleton = function ItemSkeleton({ level }: { level?: number }) {
   return (
-    <div style={{ paddingLeft: level ? `${level * 12 + 25}px` : '12px' }} className="flex gap-x-2 py-[3px]">
+    <div
+      style={{
+        paddingLeft: level ? `${level * 12 + 25}px` : '12px',
+      }}
+      className="flex gap-x-2 py-[3px]"
+    >
       <Skeleton className="h-4 w-4" />
       <Skeleton className="h-4 w-[30%]" />
     </div>

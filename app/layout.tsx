@@ -8,7 +8,6 @@ import { ModalProvider } from '@/components/providers/modal-provider'
 import { EdgeStoreProvider } from '@/lib/edgestore'
 
 import './globals.css'
-import React from 'react'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -42,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               defaultTheme="system"
               enableSystem
               disableTransitionOnChange
-              storageKey="mindNote-theme-2"
+              storageKey="mind-note-theme-2"
             >
               <Toaster position="bottom-center" />
               <ModalProvider />

@@ -1,21 +1,23 @@
 'use client'
 
-import { Doc, Id } from '@/convex/_generated/dataModel'
 import { useParams, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useQuery } from 'convex/react'
-import { api } from '@/convex/_generated/api'
-import { Item } from './item'
-import { cn } from '@/lib/utils'
 import { FileIcon } from 'lucide-react'
 
-interface DocumentsListProps {
+import { Doc, Id } from '@/convex/_generated/dataModel'
+import { api } from '@/convex/_generated/api'
+import { cn } from '@/lib/utils'
+
+import { Item } from './item'
+
+interface DocumentListProps {
   parentDocumentId?: Id<'documents'>
   level?: number
   data?: Doc<'documents'>[]
 }
 
-export const DocumentList = ({ parentDocumentId, level = 0 }: DocumentsListProps) => {
+export const DocumentList = ({ parentDocumentId, level = 0 }: DocumentListProps) => {
   const params = useParams()
   const router = useRouter()
   const [expanded, setExpanded] = useState<Record<string, boolean>>({})
@@ -52,7 +54,9 @@ export const DocumentList = ({ parentDocumentId, level = 0 }: DocumentsListProps
   return (
     <>
       <p
-        style={{ paddingLeft: level ? `${level * 12 + 25}px` : undefined }}
+        style={{
+          paddingLeft: level ? `${level * 12 + 25}px` : undefined,
+        }}
         className={cn(
           'hidden text-sm font-medium text-muted-foreground/80',
           expanded && 'last:block',
@@ -65,8 +69,8 @@ export const DocumentList = ({ parentDocumentId, level = 0 }: DocumentsListProps
         <div key={document._id}>
           <Item
             id={document._id}
-            label={document.title}
             onClick={() => onRedirect(document._id)}
+            label={document.title}
             icon={FileIcon}
             documentIcon={document.icon}
             active={params.documentId === document._id}
