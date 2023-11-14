@@ -130,7 +130,7 @@ export const Navigation = () => {
         </div>
         <div className="mt-4">
           <DocumentList />
-          <Item onClick={handleCreate} label="Add a page" icon={Plus} style={{ marginTop: '1rem' }} />
+          <Item onClick={handleCreate} label="Add a page" icon={Plus} style={{ marginTop: '0.2rem' }} />
           <Popover>
             <PopoverTrigger className="w-full mt-4">
               <Item label="Trash" icon={Trash} />
