@@ -1,10 +1,11 @@
 'use client'
 
-import { Id } from '@/convex/_generated/dataModel'
 import { useRouter } from 'next/navigation'
 import { useMutation } from 'convex/react'
-import { api } from '@/convex/_generated/api'
 import { toast } from 'sonner'
+
+import { Id } from '@/convex/_generated/dataModel'
+import { api } from '@/convex/_generated/api'
 import { Button } from '@/components/ui/button'
 import { ConfirmModal } from '@/components/modals/confirm-modal'
 
@@ -14,6 +15,7 @@ interface BannerProps {
 
 export const Banner = ({ documentId }: BannerProps) => {
   const router = useRouter()
+
   const remove = useMutation(api.documents.remove)
   const restore = useMutation(api.documents.restore)
 
@@ -38,9 +40,10 @@ export const Banner = ({ documentId }: BannerProps) => {
       error: 'Failed to restore note.',
     })
   }
+
   return (
     <div className="w-full bg-rose-500 text-center text-sm p-2 text-white flex items-center gap-x-2 justify-center">
-      <p>This page is in the Trash</p>
+      <p>This page is in the Trash.</p>
       <Button
         size="sm"
         onClick={onRestore}
@@ -52,7 +55,6 @@ export const Banner = ({ documentId }: BannerProps) => {
       <ConfirmModal onConfirm={onRemove}>
         <Button
           size="sm"
-          onClick={onRemove}
           variant="outline"
           className="border-white bg-transparent hover:bg-primary/5 text-white hover:text-white p-1 px-2 h-auto font-normal"
         >

@@ -1,4 +1,5 @@
 import { v } from 'convex/values'
+
 import { mutation, query } from './_generated/server'
 import { Doc, Id } from './_generated/dataModel'
 
@@ -38,11 +39,13 @@ export const archive = mutation({
       }
     }
 
-    await recursiveArchive(args.id)
-
-    return await ctx.db.patch(args.id, {
+    const document = await ctx.db.patch(args.id, {
       isArchived: true,
     })
+
+    recursiveArchive(args.id)
+
+    return document
   },
 })
 
@@ -160,7 +163,7 @@ export const restore = mutation({
 
     const document = await ctx.db.patch(args.id, options)
 
-    await recursiveRestore(args.id)
+    recursiveRestore(args.id)
 
     return document
   },
@@ -214,13 +217,14 @@ export const getById = query({
   args: { documentId: v.id('documents') },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity()
+
     const document = await ctx.db.get(args.documentId)
 
     if (!document) {
       throw new Error('Not found')
     }
 
-    if (document?.isPublished && !document?.isArchived) {
+    if (document.isPublished && !document.isArchived) {
       return document
     }
 
@@ -297,6 +301,33 @@ export const removeIcon = mutation({
 
     return await ctx.db.patch(args.id, {
       icon: undefined,
+    })
+  },
+})
+
+export const removeCoverImage = mutation({
+  args: { id: v.id('documents') },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity()
+
+    if (!identity) {
+      throw new Error('Unauthenticated')
+    }
+
+    const userId = identity.subject
+
+    const existingDocument = await ctx.db.get(args.id)
+
+    if (!existingDocument) {
+      throw new Error('Not found')
+    }
+
+    if (existingDocument.userId !== userId) {
+      throw new Error('Unauthorized')
+    }
+
+    return await ctx.db.patch(args.id, {
+      coverImage: undefined,
     })
   },
 })
