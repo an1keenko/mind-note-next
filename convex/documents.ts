@@ -62,12 +62,14 @@ export const getSidebar = query({
 
     const userId = identity.subject
 
-    return await ctx.db
+    const documents = await ctx.db
       .query('documents')
       .withIndex('by_user_parent', (q) => q.eq('userId', userId).eq('parentDocument', args.parentDocument))
       .filter((q) => q.eq(q.field('isArchived'), false))
       .order('desc')
       .collect()
+
+    return documents
   },
 })
 
@@ -85,13 +87,15 @@ export const create = mutation({
 
     const userId = identity.subject
 
-    return await ctx.db.insert('documents', {
+    const document = await ctx.db.insert('documents', {
       title: args.title,
       parentDocument: args.parentDocument,
       userId,
       isArchived: false,
       isPublished: false,
     })
+
+    return document
   },
 })
 
@@ -105,12 +109,14 @@ export const getTrash = query({
 
     const userId = identity.subject
 
-    return await ctx.db
+    const documents = await ctx.db
       .query('documents')
       .withIndex('by_user', (q) => q.eq('userId', userId))
       .filter((q) => q.eq(q.field('isArchived'), true))
       .order('desc')
       .collect()
+
+    return documents
   },
 })
 
@@ -190,7 +196,9 @@ export const remove = mutation({
       throw new Error('Unauthorized')
     }
 
-    return await ctx.db.delete(args.id)
+    const document = await ctx.db.delete(args.id)
+
+    return document
   },
 })
 
@@ -204,12 +212,14 @@ export const getSearch = query({
 
     const userId = identity.subject
 
-    return await ctx.db
+    const documents = await ctx.db
       .query('documents')
       .withIndex('by_user', (q) => q.eq('userId', userId))
       .filter((q) => q.eq(q.field('isArchived'), false))
       .order('desc')
       .collect()
+
+    return documents
   },
 })
 
@@ -272,9 +282,11 @@ export const update = mutation({
       throw new Error('Unauthorized')
     }
 
-    return await ctx.db.patch(args.id, {
+    const document = await ctx.db.patch(args.id, {
       ...rest,
     })
+
+    return document
   },
 })
 
@@ -299,9 +311,11 @@ export const removeIcon = mutation({
       throw new Error('Unauthorized')
     }
 
-    return await ctx.db.patch(args.id, {
+    const document = await ctx.db.patch(args.id, {
       icon: undefined,
     })
+
+    return document
   },
 })
 
@@ -326,8 +340,10 @@ export const removeCoverImage = mutation({
       throw new Error('Unauthorized')
     }
 
-    return await ctx.db.patch(args.id, {
+    const document = await ctx.db.patch(args.id, {
       coverImage: undefined,
     })
+
+    return document
   },
 })
